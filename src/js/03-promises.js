@@ -17,20 +17,13 @@ form.addEventListener('submit', e => {
   delay = firstDelay;
   for (let i = 1; i <= position; i += 1) {
     delay = Number(delay) + Number(delayStep);
+
     createPromise(i, delay)
       .then(({ position, delay }) => {
-        return resolve(
-          Notiflix.Notify.success(
-            `✅ Fulfilled promise ${position} in ${delay}ms`
-          )
-        );
+        return;
       })
-      .catch(({ position, delay }) => {
-        return reject(
-          Notiflix.Notify.failure(
-            `❌ Rejected promise ${position} in ${delay}ms`
-          )
-        );
+      .catch(error => {
+        return error;
       });
   }
 });
