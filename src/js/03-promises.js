@@ -2,6 +2,7 @@ import Notiflix from 'notiflix';
 
 const form = document.querySelector('form');
 let dataObject = {};
+let delay;
 
 form.addEventListener('change', e => {
   dataObject[e.target.name] = e.target.value;
@@ -11,25 +12,32 @@ form.addEventListener('change', e => {
 form.addEventListener('submit', e => {
   e.preventDefault();
   const position = dataObject.amount;
-  const delay = dataObject.step;
-
-  setTimeout(() => {
-    for (let i = 1; i <= position; i += 1) {
-      createPromise(i, delay)
-        .then(({ position, delay }) => {
-          resolve();
-        })
-        .catch(({ position, delay }) => {
-          reject();
-        });
-    }
-  }, delay);
+  const delayStep = dataObject.step;
+  const firstDelay = dataObject.delay;
+  delay = firstDelay;
+  for (let i = 1; i <= position; i += 1) {
+    delay = Number(delay) + Number(delayStep);
+    createPromise(i, delay)
+      .then(({ position, delay }) => {
+        return resolve(
+          Notiflix.Notify.success(
+            `✅ Fulfilled promise ${position} in ${delay}ms`
+          )
+        );
+      })
+      .catch(({ position, delay }) => {
+        return reject(
+          Notiflix.Notify.failure(
+            `❌ Rejected promise ${position} in ${delay}ms`
+          )
+        );
+      });
+  }
 });
 
 function createPromise(position, delay) {
   return new Promise((resolve, reject) => {
     const shouldResolve = Math.random() > 0.3;
-    console.log(shouldResolve);
     setTimeout(() => {
       if (shouldResolve) {
         resolve(
@@ -44,6 +52,6 @@ function createPromise(position, delay) {
           )
         );
       }
-    }, dataObject.delay);
+    }, delay);
   });
 }
