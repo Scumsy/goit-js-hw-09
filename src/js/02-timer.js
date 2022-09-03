@@ -14,7 +14,6 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    // console.log(selectedDates[0]);
     checkDate(selectedDates);
   },
 };
@@ -29,9 +28,10 @@ function checkDate(date) {
   } else {
     startBtn.disabled = false;
     startBtn.addEventListener('click', () => {
+      startBtn.disabled = true;
+      dueDate.input.disabled = true;
       setInterval(() => {
         getTimeCountDown(date);
-        startBtn.disabled = true;
       }, 1000);
     });
   }
@@ -40,10 +40,11 @@ function checkDate(date) {
 function getTimeCountDown(date) {
   const ms = date[0].getTime() - Date.now();
   convertMs(ms);
-  if (ms < 1000) {
-    Notiflix.Notify.warning('TIME IS OVER!!!!!!!');
-    return convertMs(0);
+  if (ms < 0) {
+    convertMs(0);
+    return;
   }
+  return;
 }
 
 function convertMs(ms) {
@@ -67,6 +68,7 @@ function convertMs(ms) {
   displayHours.textContent = hours;
   displayMinutes.textContent = minutes;
   displaySeconds.textContent = seconds;
+
   return { days, hours, minutes, seconds };
 }
 

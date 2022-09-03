@@ -20,10 +20,14 @@ form.addEventListener('submit', e => {
 
     createPromise(i, delay)
       .then(({ position, delay }) => {
-        return;
+        Notiflix.Notify.success(
+          `✅ Fulfilled promise ${position} in ${delay}ms`
+        );
       })
-      .catch(error => {
-        return error;
+      .catch(({ position, delay }) => {
+        Notiflix.Notify.failure(
+          `❌ Rejected promise ${position} in ${delay}ms`
+        );
       });
   }
 });
@@ -33,17 +37,9 @@ function createPromise(position, delay) {
     const shouldResolve = Math.random() > 0.3;
     setTimeout(() => {
       if (shouldResolve) {
-        resolve(
-          Notiflix.Notify.success(
-            `✅ Fulfilled promise ${position} in ${delay}ms`
-          )
-        );
+        resolve({ position, delay });
       } else {
-        reject(
-          Notiflix.Notify.failure(
-            `❌ Rejected promise ${position} in ${delay}ms`
-          )
-        );
+        reject({ position, delay });
       }
     }, delay);
   });
